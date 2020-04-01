@@ -1,4 +1,25 @@
-class TUI:
+import abc
+
+class UI(abc.ABC):
+
+    @abc.abstractmethod
+    def display(self, board):
+        pass
+
+    @abc.abstractmethod
+    def draw(self):
+        pass
+
+    @abc.abstractmethod
+    def ann_won(self):
+        pass
+
+    @abc.abstractmethod
+    def bob_won(self):
+        pass
+
+
+class TUI(UI):
 
     def display(self, board):
         print("\n"*80, end="")

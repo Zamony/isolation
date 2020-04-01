@@ -1,6 +1,13 @@
 import copy
+import enum
 
 from .board import Board
+
+
+class Winner(enum.Enum):
+    none = 0
+    player_a = 1
+    player_b = 2
 
 
 def end_of_game(board, ui):
@@ -9,19 +16,19 @@ def end_of_game(board, ui):
     if ann_isolated and bob_isolated:
         ui.display(board)
         ui.draw()
-        return True
+        return True, Winner.none
 
     if ann_isolated:
         ui.display(board)
         ui.bob_won()
-        return True
+        return True, Winner.player_b
 
     if bob_isolated:
         ui.display(board)
         ui.ann_won()
-        return True
+        return True, Winner.player_a
 
-    return False
+    return False, Winner.none
 
 
 def run_game(ui, player_ann, player_bob):
@@ -40,8 +47,9 @@ def run_game(ui, player_ann, player_bob):
             if board.remove_cell(x, y):
                 break
 
-        if end_of_game(board, ui):
-            return
+        end, winner = end_of_game(board, ui)
+        if end:
+            return winner
 
         ui.display(board)
 
@@ -57,6 +65,7 @@ def run_game(ui, player_ann, player_bob):
             if board.remove_cell(x, y):
                 break
 
-        if end_of_game(board, ui):
-            return
+        end, winner = end_of_game(board, ui)
+        if end:
+            return winner
 

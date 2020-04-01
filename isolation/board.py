@@ -1,6 +1,5 @@
 import enum
 
-
 class Cell(enum.Enum):
     none = 0
     ok = 1
@@ -41,7 +40,7 @@ class Board:
 
         return nb
 
-    def _count_ok(self, i, j):
+    def count_ways_to_move(self, i, j):
         return self._neighbours(i, j).count(Cell.ok)
 
     def _find(self, who):

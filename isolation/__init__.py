@@ -1,10 +1,10 @@
 from .board import (
-    Board, Cell,
+    Board, Cell
 )
 
 from .game import (
-    run_game
+    run_game, Winner
 )
 
-from .tui import TUI
-from .player import UserControlledPlayer, RobotControlledPlayer
+from .ui import TUI
+from .player import Player, UserControlledPlayer, RobotControlledPlayer
