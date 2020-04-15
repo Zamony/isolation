@@ -7,7 +7,7 @@ Rules are really simple:
 The player who cannot make any move loses the game
 
 
-![WMWM multihead setup](https://raw.githubusercontent.com/Zamony/zamony.github.io/master/img/isolation.png)
+![Isolation UI](https://raw.githubusercontent.com/Zamony/zamony.github.io/master/img/isolation_ui.png)
 
 
 ## Features
