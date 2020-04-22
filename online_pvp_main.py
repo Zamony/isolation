@@ -20,7 +20,7 @@ if __name__ == "__main__":
         command = input("\n" + help_str + "\n").strip()
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
-        ui = isolation.TUI()
+        ui = isolation.GUI()
 
         if command == HOST_COMMAND:
             port = int(input("Enter the desired port number: ").strip())
