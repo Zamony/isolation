@@ -1,5 +1,6 @@
 import abc
 
+from . import connection_utils
 from .ai import minimax
 
 
@@ -31,10 +32,38 @@ class UserControlledPlayer(Player):
         return "Player %s! %s" % (self.icon, s)
 
     def get_move(self, board):
-        return self._get_choice(self._with_identifier("Enter your move (ex. A3):"), board)
+        return self._get_choice(self._with_identifier("Enter your move (ex. A3): "), board)
 
     def get_remove(self, board):
-        return self._get_choice(self._with_identifier("Enter a cell to remove (ex. B3):"), board)
+        return self._get_choice(self._with_identifier("Enter a cell to remove (ex. B3): "), board)
+
+
+class LocalUserControlledPlayer(UserControlledPlayer):
+    def __init__(self, icon, socket=None):
+        super().__init__(icon)
+        self.socket = socket
+
+    def get_move(self, board):
+        move = super().get_move(board)
+        connection_utils.send_coords(self.socket, move)
+        return move
+
+    def get_remove(self, board):
+        remove = super().get_remove(board)
+        connection_utils.send_coords(self.socket, remove)
+        return remove
+
+
+class RemoteUserControlledPlayer(UserControlledPlayer):
+    def __init__(self, icon, socket=None):
+        super().__init__(icon)
+        self.socket = socket
+
+    def get_move(self, board):
+        return connection_utils.receive_one_digit_coords(self.socket)
+
+    def get_remove(self, board):
+        return connection_utils.receive_one_digit_coords(self.socket)
 
 
 class RobotControlledPlayer(Player):
