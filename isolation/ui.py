@@ -1,10 +1,13 @@
+import io
 import abc
 import copy
 import enum
-import pygame as pg
+import base64
 from itertools import product
-from configparser import ConfigParser
 
+import pygame as pg
+
+from . import resources
 
 class UI(abc.ABC):
 
@@ -80,18 +83,13 @@ class GUI(UI):
         text = (0, 153, 255)
         background = (0, 0, 0)
 
-    def __init__(self, config_path='gui/config.ini'):
+    def __init__(self):
         pg.init()
-        config = ConfigParser()
-        config.read(config_path)
-
-        section = 'user' if 'user' in config.sections() else 'default'
-        size = config.getint(section, 'screen_width'), config.getint(section, 'screen_height')
-        self.screen = pg.display.set_mode(size, pg.SRCALPHA)
+        self.screen = pg.display.set_mode((700, 700), pg.SRCALPHA)
         pg.display.set_caption("Isolation!")
 
-        self._load_objects(config)
-        self.font = pg.font.SysFont(config['core']['font'], 100)
+        self._load_objects()
+        self.font = pg.font.SysFont("arial", 100)
 
         self._last_board = None
     
@@ -184,17 +182,22 @@ class GUI(UI):
         y //= screen_h // board_size
         return y, x
 
-    def _load_objects(self, config):
-        core = config['core']
-        self._ann = pg.image.load(core['player1'])
-        self._bob = pg.image.load(core['player2'])
-        self._block = pg.image.load(core['block'])
-        self._empty = pg.image.load(core['empty'])
-        self._help = pg.image.load(core['help'])
-        with open(core['remove_cursor'], 'r') as file:
-            data = file.read().split('\n')
-            masks = pg.cursors.compile(data, 'X', '.')
-            self.remove_cursor = ((32, 24), (3, 7)) + masks
+    def _load_objects(self):
+        avatar1 = io.BytesIO(base64.b64decode(resources.avatar1))
+        avatar2 = io.BytesIO(base64.b64decode(resources.avatar2))
+        block = io.BytesIO(base64.b64decode(resources.block))
+        hole = io.BytesIO(base64.b64decode(resources.hole))
+        help = io.BytesIO(base64.b64decode(resources.help))
+
+        self._ann = pg.image.load(avatar1)
+        self._bob = pg.image.load(avatar2)
+        self._block = pg.image.load(block)
+        self._empty = pg.image.load(hole)
+        self._help = pg.image.load(help)
+
+        data = resources.hammer.split('\n')
+        masks = pg.cursors.compile(data, 'X', '.')
+        self.remove_cursor = ((32, 24), (3, 7)) + masks
         self.default_cursor = pg.cursors.arrow
 
     def _display_msg(self, msg):
