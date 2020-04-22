@@ -13,6 +13,16 @@ run: dep
 	python main.py \
 	deactivate;
 
+run-unit-tests:
+	. venv/bin/activate; \
+	python -m unittest tests/test_board.py; \
+	deactivate;
+
+run-func-tests:
+	. venv/bin/activate; \
+	python -m unittest tests/test_ai.py; \
+	deactivate;
+
 build: dep clean
 	. venv/bin/activate; \
 	pyinstaller --name isolation --onefile main.py; \
