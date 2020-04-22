@@ -112,3 +112,8 @@ class Board:
             return True
         return self.board[x][y] == Cell.none
 
+    def is_busy(self, y, x):
+        busy_cell = self.is_empty(y, x)
+        busy_cell |= (y, x) == self.get_ann_pos()
+        busy_cell |= (y, x) == self.get_bob_pos()
+        return busy_cell

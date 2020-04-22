@@ -1,7 +1,7 @@
 import isolation
 
 if __name__ == "__main__":
-    player_a = isolation.UserControlledPlayer()
+    ui = isolation.GUI()
+    player_a = isolation.UserControlledPlayer(ui)
     player_b = isolation.RobotControlledPlayer()
-    ui = isolation.TUI()
     isolation.run_game(ui, player_a, player_b)

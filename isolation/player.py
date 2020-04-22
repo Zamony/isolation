@@ -1,6 +1,9 @@
 import abc
+import sys
+import pygame as pg
 
 from .ai import minimax
+from .ui import TUI
 
 
 class Player(abc.ABC):
@@ -15,23 +18,37 @@ class Player(abc.ABC):
 
 class UserControlledPlayer(Player):
 
-    def __init__(self):
-        pass
+    def __init__(self, ui):
+        self.ui = ui
 
-    def _get_choice(self, msg, board):
-        s = input(msg)
-        for i, c in enumerate(("A", "B", "C", "D", "E", "F", "G")):
-            for j, k in enumerate(("0", "1", "2", "3", "4", "5", "6")):
-                if s == f"{c}{k}":
-                    return i, j
+    def _get_choice(self, msg, board, cursor=False):
+        if isinstance(self.ui, TUI):
+            s = input(msg)
+            for i, c in enumerate(("A", "B", "C", "D", "E", "F", "G")):
+                for j, k in enumerate(("0", "1", "2", "3", "4", "5", "6")):
+                    if s == f"{c}{k}":
+                        return i, j
+        else:
+            pos = None
+            while pos is None:
+                for event in pg.event.get():
+                    if cursor:
+                        self.ui.display_cursor(board)
 
-        return board.size, board.size
+                    if event.type == pg.MOUSEBUTTONDOWN and event.button == pg.BUTTON_LEFT:
+                        pos = event.pos
+                        break
+                    elif event.type == pg.QUIT:
+                        pg.quit()
+                        sys.exit(0)
+
+            return self.ui.screen2board(pos, board.size())
 
     def get_move(self, board):
         return self._get_choice("Enter your move (ex. A3):", board)
 
     def get_remove(self, board):
-        return self._get_choice("Enter a cell to remove (ex. B3):", board)
+        return self._get_choice("Enter a cell to remove (ex. B3):", board, cursor=True)
 
 
 class RobotControlledPlayer(Player):
