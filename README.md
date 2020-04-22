@@ -14,5 +14,5 @@ The player who cannot make any move loses the game
 + GUI interface
 + Support for Windows and Linux
 + Russian/English versions of the game
-+ Multiple difficulty levels (highly possible)
-+ Playing over the Internet (possible)
++ Multiple difficulty levels
++ Playing over the Internet

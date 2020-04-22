@@ -6,5 +6,5 @@ from .game import (
     run_game, Winner
 )
 
-from .ui import TUI
+from .ui import TUI, GUI
 from .player import Player, UserControlledPlayer, LocalUserControlledPlayer, RemoteUserControlledPlayer, RobotControlledPlayer

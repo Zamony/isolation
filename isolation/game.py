@@ -1,5 +1,6 @@
 import copy
 import enum
+import pygame as pg
 
 from .board import Board
 
@@ -28,44 +29,57 @@ def end_of_game(board, ui):
         ui.ann_won()
         return True, Winner.player_a
 
+    if pg.get_init():
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                return True, Winner.none
+
     return False, Winner.none
 
 
 def run_game(ui, player_ann, player_bob):
     board = Board()
+    ui.display(board)
     while True:
-        ui.display(board)
         while True:
+            ann_pos = board.get_ann_pos()
+            ui.display_help(ann_pos, board)
             x, y = player_ann.get_move(copy.deepcopy(board))
             if board.move_ann(x, y):
+                ui.clear_help(ann_pos, board)
                 break
 
         ui.display(board)
+        end, winner = end_of_game(board, ui)
+        if end:
+            return winner
 
         while True:
             x, y = player_ann.get_remove(copy.deepcopy(board))
             if board.remove_cell(x, y):
                 break
 
+        ui.display(board)
         end, winner = end_of_game(board, ui)
         if end:
             return winner
-
-        ui.display(board)
 
         while True:
             x, y = player_bob.get_move(copy.deepcopy(board))
             if board.move_bob(x, y):
                 break
-        
+
         ui.display(board)
+        end, winner = end_of_game(board, ui)
+        if end:
+            return winner
 
         while True:
             x, y = player_bob.get_remove(copy.deepcopy(board))
             if board.remove_cell(x, y):
                 break
 
+        ui.display(board)
         end, winner = end_of_game(board, ui)
         if end:
             return winner
-
