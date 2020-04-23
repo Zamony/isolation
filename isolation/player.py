@@ -2,6 +2,7 @@ import abc
 import sys
 import pygame as pg
 
+from . import connection_utils
 from .ai import minimax
 from .ui import TUI
 
@@ -18,15 +19,16 @@ class Player(abc.ABC):
 
 class UserControlledPlayer(Player):
 
-    def __init__(self, ui):
+    def __init__(self, ui, icon):
         self.ui = ui
+        self.icon = icon
 
     def _get_choice(self, msg, board, cursor=False):
         if isinstance(self.ui, TUI):
             s = input(msg)
             for i, c in enumerate(("A", "B", "C", "D", "E", "F", "G")):
                 for j, k in enumerate(("0", "1", "2", "3", "4", "5", "6")):
-                    if s == f"{c}{k}":
+                    if s.lower() == f"{c}{k}".lower():
                         return i, j
         else:
             pos = None
@@ -44,11 +46,43 @@ class UserControlledPlayer(Player):
 
             return self.ui.screen2board(pos, board.size())
 
+    def _with_identifier(self, s):
+        return "Player %s! %s" % (self.icon, s)
+
+
     def get_move(self, board):
-        return self._get_choice("Enter your move (ex. A3):", board)
+        return self._get_choice(self._with_identifier("Enter your move (ex. A3): "), board)
 
     def get_remove(self, board):
-        return self._get_choice("Enter a cell to remove (ex. B3):", board, cursor=True)
+        return self._get_choice(self._with_identifier("Enter a cell to remove (ex. B3): "), board, cursor=True)
+
+
+class LocalUserControlledPlayer(UserControlledPlayer):
+    def __init__(self, ui, icon, socket=None):
+        super().__init__(ui, icon)
+        self.socket = socket
+
+    def get_move(self, board):
+        move = super().get_move(board)
+        connection_utils.send_coords(self.socket, move)
+        return move
+
+    def get_remove(self, board):
+        remove = super().get_remove(board)
+        connection_utils.send_coords(self.socket, remove)
+        return remove
+
+
+class RemoteUserControlledPlayer(UserControlledPlayer):
+    def __init__(self, ui, icon, socket=None):
+        super().__init__(ui, icon)
+        self.socket = socket
+
+    def get_move(self, board):
+        return connection_utils.receive_one_digit_coords(self.socket)
+
+    def get_remove(self, board):
+        return connection_utils.receive_one_digit_coords(self.socket)
 
 
 class RobotControlledPlayer(Player):
