@@ -1,5 +1,7 @@
 import socket
+import re
 
+ONE_DIGIT_COORDS_PATTERN = r"\([0-6], [0-6]\)"
 ONE_DIGIT_COORDS_LEN = len("(x, y)")
 
 HOST_PROMPT = "Host: "
@@ -7,7 +9,10 @@ PORT_PROMPT = "Port: "
 
 
 def receive_one_digit_coords(read_socket):
-    return eval(read_socket.recv(ONE_DIGIT_COORDS_LEN).decode())
+    received = read_socket.recv(ONE_DIGIT_COORDS_LEN).decode()
+    if not __validate_coordinates(received):
+        raise ValueError("The received string '%s' can't be parsed as coordinates" % received)
+    return eval(received)
 
 
 def send_coords(write_socket, coords):
@@ -27,3 +32,7 @@ def blocking_wait_for_player(server_socket):
     client_socket, address = server_socket.accept()
     print("Player 2 has joined: ", address)
     return client_socket
+
+
+def __validate_coordinates(coords_str):
+    return True if re.match(ONE_DIGIT_COORDS_PATTERN, coords_str) else False
