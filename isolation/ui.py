@@ -9,6 +9,7 @@ import pygame as pg
 
 from . import resources
 
+
 class UI(abc.ABC):
 
     @abc.abstractmethod
@@ -139,7 +140,6 @@ class GUI(UI):
         self.screen.blit(scaled_image, screen_pos)
 
     def display_help(self, pos, board):
-        self.clear_help(pos, board)
         y, x = pos
         board_size = board.size()
         for dx, dy in product([-1, 0, 1], repeat=2):

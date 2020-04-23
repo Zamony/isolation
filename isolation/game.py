@@ -43,10 +43,8 @@ def run_game(ui, player_ann, player_bob):
     while True:
         while True:
             ann_pos = board.get_ann_pos()
-            ui.display_help(ann_pos, board)
-            x, y = player_ann.get_move(copy.deepcopy(board))
+            x, y = player_ann.get_move(ann_pos, copy.deepcopy(board))
             if board.move_ann(x, y):
-                ui.clear_help(ann_pos, board)
                 break
 
         ui.display(board)
@@ -65,7 +63,8 @@ def run_game(ui, player_ann, player_bob):
             return winner
 
         while True:
-            x, y = player_bob.get_move(copy.deepcopy(board))
+            bob_pos = board.get_bob_pos()
+            x, y = player_bob.get_move(bob_pos, copy.deepcopy(board))
             if board.move_bob(x, y):
                 break
 
