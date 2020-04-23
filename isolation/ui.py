@@ -97,11 +97,13 @@ class GUI(UI):
         self.font = pg.font.SysFont("arial", 100)
 
         self._last_board = None
+        self._cell_size = None
 
     def display(self, board):
         pg.mouse.set_cursor(*self.default_cursor)
         board_size = board.size()
         if self._last_board is None:
+            self._resize_images(board_size)
             self.screen.fill(self.Color.background.value)
             for y in range(board_size):
                 for x in range(board_size):
@@ -131,17 +133,9 @@ class GUI(UI):
     def size(self):
         return self.screen.get_size()
 
-    def get_cell_size(self, board_size):
-        screen_size = self.size
-        w = screen_size[0] // board_size
-        h = screen_size[1] // board_size
-        return w, h
-
     def draw_cell(self, img, pos, board_size):
-        cell_size = self.get_cell_size(board_size)
-        scaled_image = pg.transform.scale(img, cell_size)
         screen_pos = self.board2screen(pos, board_size)
-        self.screen.blit(scaled_image, screen_pos)
+        self.screen.blit(img, screen_pos)
 
     def display_help(self, pos, board):
         y, x = pos
@@ -191,18 +185,29 @@ class GUI(UI):
         avatar2 = io.BytesIO(base64.b64decode(resources.avatar2))
         block = io.BytesIO(base64.b64decode(resources.block))
         hole = io.BytesIO(base64.b64decode(resources.hole))
-        help = io.BytesIO(base64.b64decode(resources.help))
+        help_ = io.BytesIO(base64.b64decode(resources.help))
 
         self._ann = pg.image.load(avatar1)
         self._bob = pg.image.load(avatar2)
         self._block = pg.image.load(block)
         self._empty = pg.image.load(hole)
-        self._help = pg.image.load(help)
+        self._help = pg.image.load(help_)
 
         data = resources.hammer.split('\n')
         masks = pg.cursors.compile(data, 'X', '.')
         self.remove_cursor = ((32, 24), (3, 7)) + masks
         self.default_cursor = pg.cursors.arrow
+
+    def _resize_images(self, board_size):
+        screen_size = self.size
+        w = screen_size[0] // board_size
+        h = screen_size[1] // board_size
+        self._cell_size = w, h
+        self._ann = pg.transform.scale(self._ann, self._cell_size)
+        self._bob = pg.transform.scale(self._bob, self._cell_size)
+        self._block = pg.transform.scale(self._block, self._cell_size)
+        self._empty = pg.transform.scale(self._empty, self._cell_size)
+        self._help = pg.transform.scale(self._help, self._cell_size)
 
     def _display_msg(self, msg):
         screen_size = self.size
