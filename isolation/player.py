@@ -9,7 +9,7 @@ from .ui import TUI
 
 class Player(abc.ABC):
     @abc.abstractmethod
-    def get_move(self, board):
+    def get_move(self, my_position, board):
         pass
 
     @abc.abstractmethod
@@ -49,9 +49,11 @@ class UserControlledPlayer(Player):
     def _with_identifier(self, s):
         return "Player %s! %s" % (self.icon, s)
 
-
-    def get_move(self, board):
-        return self._get_choice(self._with_identifier("Enter your move (ex. A3): "), board)
+    def get_move(self, my_position, board):
+        self.ui.display_help(my_position, board)
+        move = self._get_choice("Enter your move (ex. A3):", board)
+        self.ui.clear_help(my_position, board)
+        return move
 
     def get_remove(self, board):
         return self._get_choice(self._with_identifier("Enter a cell to remove (ex. B3): "), board, cursor=True)
@@ -93,7 +95,7 @@ class RobotControlledPlayer(Player):
         self.remove_x = None
         self.remove_y = None
 
-    def get_move(self, board):
+    def get_move(self, my_position, board):
         _, turn = minimax(board, self.maxdepth, self.maxscatter)
         self.remove_x = turn.remove_x
         self.remove_y = turn.remove_y
