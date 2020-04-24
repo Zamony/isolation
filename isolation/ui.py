@@ -86,25 +86,34 @@ class GUI(UI):
 
     class Color(enum.Enum):
         text = (0, 153, 255)
-        background = (0, 0, 0)
+        screen_background = (0, 0, 0)
+        info_background = (100, 100, 100)
 
-    def __init__(self):
+    def __init__(self, size=(700, 700)):
         pg.init()
-        self.screen = pg.display.set_mode((700, 700), pg.SRCALPHA)
+        self.window = pg.display.set_mode((round(size[0] * 1.2), size[1]), pg.SRCALPHA)
         pg.display.set_caption("Isolation!")
+        self.screen = self.window.subsurface(pg.Rect(0, 0, size[0], size[1]))
+        self.info = self.window.subsurface(pg.Rect(size[0], 0, round(size[0] * 0.2), size[1]))
+        self.info.fill(self.Color.info_background.value)
+        self.info_txt = 0, self.info.get_height() // 2
+        self.info_img = self.info.get_width() // 4, self.info.get_height() // 2
 
         self._load_objects()
+        self._set_icons(self.info.get_width() // 2)
         self.font = pg.font.SysFont("arial", 100)
+        self.info_font = pg.font.SysFont("arial", 25)
 
         self._last_board = None
         self._cell_size = None
 
     def display(self, board):
         pg.mouse.set_cursor(*self.default_cursor)
+        self.info.fill(self.Color.info_background.value)
         board_size = board.size()
         if self._last_board is None:
             self._resize_images(board_size)
-            self.screen.fill(self.Color.background.value)
+            self.screen.fill(self.Color.screen_background.value)
             for y in range(board_size):
                 for x in range(board_size):
                     self.draw_cell(self._block, (y, x), board_size)
@@ -121,13 +130,24 @@ class GUI(UI):
         pg.display.update()
 
     def draw(self):
-        self._display_msg("Draw!")
+        self._display_final_msg("Draw!")
 
     def ann_won(self):
-        self._display_msg("Ann won!")
+        self._display_final_msg("Ann won!")
 
     def bob_won(self):
-        self._display_msg("Bob won!")
+        self._display_final_msg("Bob won!")
+
+    def display_info_img(self, img):
+        self.info.blit(img, self.info_img)
+        pg.display.update()
+
+    def display_info_text(self, msg):
+        text = self.info_font.render(msg, True, self.Color.text.value)
+        rect = text.get_rect()
+        rect.bottomleft = self.info_txt
+        self.info.blit(text, rect)
+        pg.display.update()
 
     @property
     def size(self):
@@ -135,7 +155,7 @@ class GUI(UI):
 
     def draw_cell(self, img, pos, board_size):
         screen_pos = self.board2screen(pos, board_size)
-        self.screen.blit(img, screen_pos)
+        r = self.screen.blit(img, screen_pos)
 
     def display_help(self, pos, board):
         y, x = pos
@@ -155,7 +175,7 @@ class GUI(UI):
             if dx == 0 and dy == 0:
                 continue
             i, j = y + dy, x + dx
-            if not board.is_empty(i, j):
+            if not board.is_busy(i, j):
                 self.draw_cell(self._block, (i, j), board_size)
 
     def display_cursor(self, board):
@@ -198,6 +218,10 @@ class GUI(UI):
         self.remove_cursor = ((32, 24), (3, 7)) + masks
         self.default_cursor = pg.cursors.arrow
 
+    def _set_icons(self, size):
+        self.ANN_ICON = pg.transform.scale(self._ann, (size, size))
+        self.BOB_ICON = pg.transform.scale(self._bob, (size, size))
+
     def _resize_images(self, board_size):
         screen_size = self.size
         w = screen_size[0] // board_size
@@ -209,7 +233,7 @@ class GUI(UI):
         self._empty = pg.transform.scale(self._empty, self._cell_size)
         self._help = pg.transform.scale(self._help, self._cell_size)
 
-    def _display_msg(self, msg):
+    def _display_final_msg(self, msg):
         screen_size = self.size
         text = self.font.render(msg, True, self.Color.text.value)
         rect = text.get_rect()

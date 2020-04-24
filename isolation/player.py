@@ -25,12 +25,14 @@ class UserControlledPlayer(Player):
 
     def _get_choice(self, msg, board, cursor=False):
         if isinstance(self.ui, TUI):
-            s = input(msg)
+            s = input(self._with_identifier(msg))
             for i, c in enumerate(("A", "B", "C", "D", "E", "F", "G")):
                 for j, k in enumerate(("0", "1", "2", "3", "4", "5", "6")):
                     if s.lower() == f"{c}{k}".lower():
                         return i, j
         else:
+            self.ui.display_info_img(self.icon)
+            self.ui.display_info_text("Your move")
             pos = None
             while pos is None:
                 for event in pg.event.get():
@@ -56,7 +58,7 @@ class UserControlledPlayer(Player):
         return move
 
     def get_remove(self, board):
-        return self._get_choice(self._with_identifier("Enter a cell to remove (ex. B3): "), board, cursor=True)
+        return self._get_choice("Enter a cell to remove (ex. B3): ", board, cursor=True)
 
 
 class LocalUserControlledPlayer(UserControlledPlayer):
@@ -64,8 +66,8 @@ class LocalUserControlledPlayer(UserControlledPlayer):
         super().__init__(ui, icon)
         self.socket = socket
 
-    def get_move(self, board):
-        move = super().get_move(board)
+    def get_move(self, my_position, board):
+        move = super().get_move(my_position, board)
         connection_utils.send_coords(self.socket, move)
         return move
 
@@ -80,7 +82,8 @@ class RemoteUserControlledPlayer(UserControlledPlayer):
         super().__init__(ui, icon)
         self.socket = socket
 
-    def get_move(self, board):
+    def get_move(self, my_position, board):
+        self.ui.display_info_text("Opponent move")
         return connection_utils.receive_one_digit_coords(self.socket)
 
     def get_remove(self, board):
