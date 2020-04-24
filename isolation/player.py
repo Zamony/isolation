@@ -64,8 +64,8 @@ class LocalUserControlledPlayer(UserControlledPlayer):
         super().__init__(ui, icon)
         self.socket = socket
 
-    def get_move(self, board):
-        move = super().get_move(board)
+    def get_move(self, my_position, board):
+        move = super().get_move(my_position, board)
         connection_utils.send_coords(self.socket, move)
         return move
 
@@ -80,7 +80,7 @@ class RemoteUserControlledPlayer(UserControlledPlayer):
         super().__init__(ui, icon)
         self.socket = socket
 
-    def get_move(self, board):
+    def get_move(self, my_position, board):
         return connection_utils.receive_one_digit_coords(self.socket)
 
     def get_remove(self, board):

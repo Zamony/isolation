@@ -11,7 +11,7 @@ class RandomControlledPlayer(Player):
         self.rx = 0
         self.ry = 0
 
-    def get_move(self, board):
+    def get_move(self, my_position, board):
         x, y = board.get_ann_pos()
         i = j = None
         while True:
