@@ -83,10 +83,13 @@ class RemoteUserControlledPlayer(UserControlledPlayer):
         self.socket = socket
 
     def get_move(self, my_position, board):
-        self.ui.display_info_text("Opponent move")
+        self.ui.display_info_text("Wait")
+        self.ui.display_info_img(self.icon)
         return connection_utils.receive_one_digit_coords(self.socket)
 
     def get_remove(self, board):
+        self.ui.display_info_text("Wait")
+        self.ui.display_info_img(self.ui)
         return connection_utils.receive_one_digit_coords(self.socket)
 
 
