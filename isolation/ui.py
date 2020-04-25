@@ -155,7 +155,7 @@ class GUI(UI):
             if dx == 0 and dy == 0:
                 continue
             i, j = y + dy, x + dx
-            if not board.is_empty(i, j):
+            if not board.is_busy(i, j):
                 self.draw_cell(self._block, (i, j), board_size)
 
     def display_cursor(self, board):
