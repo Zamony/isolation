@@ -3,7 +3,7 @@ import sys
 import pygame as pg
 
 from . import connection_utils
-from .ai import minimax
+from . import ai
 from .ui import TUI
 
 
@@ -89,14 +89,13 @@ class RemoteUserControlledPlayer(UserControlledPlayer):
 
 class RobotControlledPlayer(Player):
 
-    def __init__(self, maxdepth=3, maxscatter=2):
-        self.maxdepth = maxdepth
-        self.maxscatter = maxscatter
+    def __init__(self, difficulty):
+        self.difficulty = difficulty
         self.remove_x = None
         self.remove_y = None
 
     def get_move(self, my_position, board):
-        _, turn = minimax(board, self.maxdepth, self.maxscatter)
+        _, turn = ai.minimax(board, self.difficulty)
         self.remove_x = turn.remove_x
         self.remove_y = turn.remove_y
         return turn.move_x, turn.move_y

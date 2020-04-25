@@ -8,3 +8,4 @@ from .game import (
 
 from .ui import TUI, GUI
 from .player import Player, UserControlledPlayer, LocalUserControlledPlayer, RemoteUserControlledPlayer, RobotControlledPlayer
+from . import ai
