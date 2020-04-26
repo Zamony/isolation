@@ -1,3 +1,7 @@
+"""
+Module UI implements different types of user interface
+"""
+
 import io
 import abc
 import copy
@@ -185,7 +189,7 @@ class GUI(UI):
         avatar2 = io.BytesIO(base64.b64decode(resources.avatar2))
         block = io.BytesIO(base64.b64decode(resources.block))
         hole = io.BytesIO(base64.b64decode(resources.hole))
-        help_ = io.BytesIO(base64.b64decode(resources.help))
+        help_ = io.BytesIO(base64.b64decode(resources.help_))
 
         self._ann = pg.image.load(avatar1)
         self._bob = pg.image.load(avatar2)

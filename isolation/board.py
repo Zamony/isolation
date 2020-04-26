@@ -1,3 +1,7 @@
+"""
+Module board implements a game board
+"""
+
 import enum
 
 class Cell(enum.Enum):

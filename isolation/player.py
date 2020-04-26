@@ -1,3 +1,7 @@
+"""
+Module player implements different types of players
+"""
+
 import abc
 import sys
 import pygame as pg

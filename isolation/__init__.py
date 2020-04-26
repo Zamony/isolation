@@ -1,3 +1,7 @@
+"""
+Module __init__ exports package definitions
+"""
+
 from .board import (
     Board, Cell
 )
