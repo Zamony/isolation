@@ -2,7 +2,7 @@ import random
 import unittest
 from unittest import mock
 
-from isolation import Player, RobotControlledPlayer, run_game, Winner
+from isolation import Player, RobotControlledPlayer, run_game, Winner, ai
 
 
 class RandomControlledPlayer(Player):
@@ -11,7 +11,7 @@ class RandomControlledPlayer(Player):
         self.rx = 0
         self.ry = 0
 
-    def get_move(self, board):
+    def get_move(self, my_position, board):
         x, y = board.get_ann_pos()
         i = j = None
         while True:
@@ -37,7 +37,7 @@ class TestAI(unittest.TestCase):
         total = 10
         for _ in range(total):
             player_a = RandomControlledPlayer()
-            player_b = RobotControlledPlayer()
+            player_b = RobotControlledPlayer(ai.Difficulty.hard)
             winner = run_game(mock.Mock(), player_a, player_b)
             if winner == Winner.player_b:
                 nvictory += 1

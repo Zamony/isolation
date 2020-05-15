@@ -1,9 +1,13 @@
+"""
+Module player implements different types of players
+"""
+
 import abc
 import sys
 import pygame as pg
 
 from . import connection_utils
-from .ai import minimax
+from . import ai
 from .ui import TUI, GUI
 
 
@@ -97,9 +101,8 @@ class RemoteUserControlledPlayer(UserControlledPlayer):
 
 class RobotControlledPlayer(Player):
 
-    def __init__(self, ui, maxdepth=3, maxscatter=2):
-        self.maxdepth = maxdepth
-        self.maxscatter = maxscatter
+    def __init__(self, ui, difficulty, maxdepth=3, maxscatter=2):
+        self.difficulty = difficulty
         self.remove_x = None
         self.remove_y = None
         self.ui = ui
@@ -109,7 +112,7 @@ class RobotControlledPlayer(Player):
             self.ui.display_info_text("Wait")
             self.ui.display_info_img(self.ui.WAIT_ICON)
 
-        _, turn = minimax(board, self.maxdepth, self.maxscatter)
+        _, turn = ai.minimax(board, self.difficulty)
         self.remove_x = turn.remove_x
         self.remove_y = turn.remove_y
         return turn.move_x, turn.move_y

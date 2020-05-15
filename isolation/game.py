@@ -1,3 +1,7 @@
+"""
+Module game implements a game logic
+"""
+
 import copy
 import enum
 import pygame as pg
@@ -37,47 +41,49 @@ def end_of_game(board, ui):
     return False, Winner.none
 
 
+def move_player(player, board, is_bobs_turn):
+    if is_bobs_turn:
+        pos = board.get_bob_pos()
+    else:
+        pos = board.get_ann_pos()
+    while True:
+        x, y = player.get_move(pos, copy.deepcopy(board))
+        if is_bobs_turn and board.move_bob(x, y):
+            return
+        if not is_bobs_turn and board.move_ann(x, y):
+            return
+
+
+def remove_tile(player, board):
+    while True:
+        x, y = player.get_remove(copy.deepcopy(board))
+        if board.remove_cell(x, y):
+            return
+
+
 def run_game(ui, player_ann, player_bob):
     board = Board()
     ui.display(board)
     while True:
-        while True:
-            ann_pos = board.get_ann_pos()
-            x, y = player_ann.get_move(ann_pos, copy.deepcopy(board))
-            if board.move_ann(x, y):
-                break
-
+        move_player(player_ann, board, is_bobs_turn=False)
         ui.display(board)
         end, winner = end_of_game(board, ui)
         if end:
             return winner
 
-        while True:
-            x, y = player_ann.get_remove(copy.deepcopy(board))
-            if board.remove_cell(x, y):
-                break
-
+        remove_tile(player_ann, board)
         ui.display(board)
         end, winner = end_of_game(board, ui)
         if end:
             return winner
 
-        while True:
-            bob_pos = board.get_bob_pos()
-            x, y = player_bob.get_move(bob_pos, copy.deepcopy(board))
-            if board.move_bob(x, y):
-                break
-
+        move_player(player_bob, board, is_bobs_turn=True)
         ui.display(board)
         end, winner = end_of_game(board, ui)
         if end:
             return winner
 
-        while True:
-            x, y = player_bob.get_remove(copy.deepcopy(board))
-            if board.remove_cell(x, y):
-                break
-
+        remove_tile(player_bob, board)
         ui.display(board)
         end, winner = end_of_game(board, ui)
         if end:

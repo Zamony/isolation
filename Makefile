@@ -1,6 +1,6 @@
 PYTHON=python3
 
-.PHONY: dep run build clean
+.PHONY: dep run run-unit-tests run-func-tests build clean lint
 
 dep: requirements.txt
 	@$(PYTHON) -m venv venv
@@ -25,8 +25,13 @@ run-func-tests:
 
 build: dep clean
 	. venv/bin/activate; \
-	pyinstaller --name isolation --onefile pve_main.py; \
+	pyinstaller --name isolation --onefile main.py; \
 	deactivate;
 
 clean:
 	rm -rf dist build __pycache__ isolation.spec
+
+lint:
+	. venv/bin/activate; \
+	pylint --disable="C0103,C0301,C0116,C0115,R0914" isolation; \
+	deactivate;
