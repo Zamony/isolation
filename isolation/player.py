@@ -4,7 +4,7 @@ import pygame as pg
 
 from . import connection_utils
 from .ai import minimax
-from .ui import TUI
+from .ui import TUI, GUI
 
 
 class Player(abc.ABC):
@@ -83,29 +83,39 @@ class RemoteUserControlledPlayer(UserControlledPlayer):
         self.socket = socket
 
     def get_move(self, my_position, board):
-        self.ui.display_info_text("Wait")
-        self.ui.display_info_img(self.icon)
+        if isinstance(self.ui, GUI):
+            self.ui.display_info_text("Wait")
+            self.ui.display_info_img(self.ui.WAIT_ICON)
         return connection_utils.receive_one_digit_coords(self.socket)
 
     def get_remove(self, board):
-        self.ui.display_info_text("Wait")
-        self.ui.display_info_img(self.ui)
+        if isinstance(self.ui, GUI):
+            self.ui.display_info_text("Wait")
+            self.ui.display_info_img(self.ui.WAIT_ICON)
         return connection_utils.receive_one_digit_coords(self.socket)
 
 
 class RobotControlledPlayer(Player):
 
-    def __init__(self, maxdepth=3, maxscatter=2):
+    def __init__(self, ui, maxdepth=3, maxscatter=2):
         self.maxdepth = maxdepth
         self.maxscatter = maxscatter
         self.remove_x = None
         self.remove_y = None
+        self.ui = ui
 
     def get_move(self, my_position, board):
+        if isinstance(self.ui, GUI):
+            self.ui.display_info_text("Wait")
+            self.ui.display_info_img(self.ui.WAIT_ICON)
+
         _, turn = minimax(board, self.maxdepth, self.maxscatter)
         self.remove_x = turn.remove_x
         self.remove_y = turn.remove_y
         return turn.move_x, turn.move_y
 
     def get_remove(self, board):
+        if isinstance(self.ui, GUI):
+            self.ui.display_info_text("Wait")
+            self.ui.display_info_img(self.ui.WAIT_ICON)
         return self.remove_x, self.remove_y

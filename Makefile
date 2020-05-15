@@ -15,7 +15,7 @@ run: dep
 
 run-unit-tests:
 	. venv/bin/activate; \
-	python -m unittest tests/test_board.py; \
+	python -m unittest tests/test_board.py tests/test_ui.py; \
 	deactivate;
 
 run-func-tests:
@@ -25,7 +25,7 @@ run-func-tests:
 
 build: dep clean
 	. venv/bin/activate; \
-	pyinstaller --name isolation --onefile main.py; \
+	pyinstaller --name isolation --onefile pve_main.py; \
 	deactivate;
 
 clean:
