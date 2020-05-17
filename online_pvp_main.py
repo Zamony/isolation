@@ -1,7 +1,7 @@
 import isolation
 import socket
 
-from isolation import connection_utils
+from isolation import connection_utils, translate
 
 JOIN_COMMAND = "/join"
 HOST_COMMAND = "/host"
@@ -10,7 +10,7 @@ available_commands = [HOST_COMMAND, JOIN_COMMAND]
 
 
 def get_help_str(commands):
-    return " or ".join(commands) + "?"
+    return translate(" or ").join(commands) + "?"
 
 
 if __name__ == "__main__":
@@ -23,7 +23,7 @@ if __name__ == "__main__":
         ui = isolation.GUI()
 
         if command == HOST_COMMAND:
-            port = int(input("Enter the desired port number: ").strip())
+            port = int(input(translate("Enter the desired port number: ")).strip())
 
             connection_utils.start_server_on_port(server_socket, port)
             client_socket = connection_utils.blocking_wait_for_player(server_socket)
