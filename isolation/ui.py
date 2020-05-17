@@ -12,6 +12,7 @@ from itertools import product
 import pygame as pg
 
 from . import resources
+from .localization import translate
 
 
 class UI(abc.ABC):
@@ -71,13 +72,13 @@ class TUI(UI):
         print(self.BOARD_DIGITS_GRID)
 
     def draw(self):
-        print("It's a draw!")
+        print(translate("It's a draw!"))
 
     def ann_won(self):
-        print("Player %s has won!" % self.ANN_ICON)
+        print(translate("Player %s has won!") % self.ANN_ICON)
 
     def bob_won(self):
-        print("Player %s has won!" % self.BOB_ICON)
+        print(translate("Player %s has won!") % self.BOB_ICON)
 
     def display_help(self, pos, board):
         pass
@@ -135,13 +136,13 @@ class GUI(UI):
         pg.display.update()
 
     def draw(self):
-        self._display_final_msg("Draw!")
+        self._display_final_msg(translate("Draw!"))
 
     def ann_won(self):
-        self._display_final_msg("Ann won!")
+        self._display_final_msg(translate("Ann won!"))
 
     def bob_won(self):
-        self._display_final_msg("Bob won!")
+        self._display_final_msg(translate("Bob won!"))
 
     def display_info_img(self, img):
         x = max((self.info.get_width() - img.get_width()) // 2, 0)
@@ -238,7 +239,7 @@ class GUI(UI):
         self.remove_cursor = ((32, 24), (3, 7)) + masks
         self.default_cursor = pg.cursors.arrow
 
-        rules = resources.rules
+        rules = translate(resources.rules)
         self.rules = []
         for rule in rules.splitlines():
             self.rules.append(self.info_font.render(rule, True, self.Color.text.value))

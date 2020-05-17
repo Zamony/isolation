@@ -1,11 +1,13 @@
 import socket
 import re
 
+from .localization import translate
+
 ONE_DIGIT_COORDS_PATTERN = r"\([0-6], [0-6]\)"
 ONE_DIGIT_COORDS_LEN = len("(x, y)")
 
-HOST_PROMPT = "Host: "
-PORT_PROMPT = "Port: "
+HOST_PROMPT = translate("Host: ")
+PORT_PROMPT = translate("Port: ")
 
 
 def receive_one_digit_coords(read_socket):
@@ -28,9 +30,9 @@ def start_server_on_port(server_socket, port, num_connections=1):
 
 
 def blocking_wait_for_player(server_socket):
-    print("Waiting for the second player to join the game...")
+    print(translate("Waiting for the second player to join the game..."))
     client_socket, address = server_socket.accept()
-    print("Player 2 has joined: ", address)
+    print(translate("Player 2 has joined: "), address)
     return client_socket
 
 

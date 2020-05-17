@@ -9,6 +9,7 @@ import pygame as pg
 from . import connection_utils
 from . import ai
 from .ui import TUI, GUI
+from .localization import translate
 
 
 class Player(abc.ABC):
@@ -36,7 +37,7 @@ class UserControlledPlayer(Player):
                         return i, j
         else:
             self.ui.display_info_img(self.icon)
-            self.ui.display_info_text("Your move")
+            self.ui.display_info_text(translate("Your move"))
             pos = None
             while pos is None:
                 for event in pg.event.get():
@@ -53,16 +54,16 @@ class UserControlledPlayer(Player):
             return self.ui.screen2board(pos, board.size())
 
     def _with_identifier(self, s):
-        return "Player %s! %s" % (self.icon, s)
+        return translate("Player %s! %s") % (self.icon, s)
 
     def get_move(self, my_position, board):
         self.ui.display_help(my_position, board)
-        move = self._get_choice("Enter your move (ex. A3):", board)
+        move = self._get_choice(translate("Enter your move (ex. A3):"), board)
         self.ui.clear_help(my_position, board)
         return move
 
     def get_remove(self, board):
-        return self._get_choice("Enter a cell to remove (ex. B3): ", board, cursor=True)
+        return self._get_choice(translate("Enter a cell to remove (ex. B3): "), board, cursor=True)
 
 
 class LocalUserControlledPlayer(UserControlledPlayer):
@@ -88,20 +89,20 @@ class RemoteUserControlledPlayer(UserControlledPlayer):
 
     def get_move(self, my_position, board):
         if isinstance(self.ui, GUI):
-            self.ui.display_info_text("Wait")
+            self.ui.display_info_text(translate("Wait"))
             self.ui.display_info_img(self.ui.WAIT_ICON)
         return connection_utils.receive_one_digit_coords(self.socket)
 
     def get_remove(self, board):
         if isinstance(self.ui, GUI):
-            self.ui.display_info_text("Wait")
+            self.ui.display_info_text(translate("Wait"))
             self.ui.display_info_img(self.ui.WAIT_ICON)
         return connection_utils.receive_one_digit_coords(self.socket)
 
 
 class RobotControlledPlayer(Player):
 
-    def __init__(self, ui, difficulty, maxdepth=3, maxscatter=2):
+    def __init__(self, ui, difficulty):
         self.difficulty = difficulty
         self.remove_x = None
         self.remove_y = None
@@ -109,7 +110,7 @@ class RobotControlledPlayer(Player):
 
     def get_move(self, my_position, board):
         if isinstance(self.ui, GUI):
-            self.ui.display_info_text("Wait")
+            self.ui.display_info_text(translate("Wait"))
             self.ui.display_info_img(self.ui.WAIT_ICON)
 
         _, turn = ai.minimax(board, self.difficulty)
@@ -119,6 +120,6 @@ class RobotControlledPlayer(Player):
 
     def get_remove(self, board):
         if isinstance(self.ui, GUI):
-            self.ui.display_info_text("Wait")
+            self.ui.display_info_text(translate("Wait"))
             self.ui.display_info_img(self.ui.WAIT_ICON)
         return self.remove_x, self.remove_y
