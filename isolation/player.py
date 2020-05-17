@@ -101,7 +101,7 @@ class RemoteUserControlledPlayer(UserControlledPlayer):
 
 class RobotControlledPlayer(Player):
 
-    def __init__(self, ui, difficulty, maxdepth=3, maxscatter=2):
+    def __init__(self, ui, difficulty):
         self.difficulty = difficulty
         self.remove_x = None
         self.remove_y = None
