@@ -15,7 +15,7 @@ run: dep
 
 run-unit-tests:
 	. venv/bin/activate; \
-	python -m unittest tests/test_board.py; \
+	python -m unittest tests/test_board.py tests/test_ui.py; \
 	deactivate;
 
 run-func-tests:
