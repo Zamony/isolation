@@ -28,8 +28,14 @@ build: dep clean
 	pyinstaller --name isolation --onefile main.py; \
 	deactivate;
 
+wheel: dep clean
+	. venv/bin/activate; \
+	python setup.py bdist_wheel; \
+	pip wheel -r requirements.txt; \
+	deactivate;
+
 clean:
-	rm -rf dist build __pycache__ isolation.spec
+	rm -rf dist build __pycache__ isolation.spec *.whl *.egg-info
 
 lint:
 	. venv/bin/activate; \

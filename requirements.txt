@@ -1,3 +1,4 @@
-pygame==1.9.6
+wheel
+pygame==2.0.0.dev8
 pyinstaller==3.6
 pylint==2.4.4
