@@ -5,13 +5,13 @@ Module UI implements different types of user interface
 import io
 import abc
 import copy
-import enum
 import base64
 from itertools import product
 
 import pygame as pg
 
 from . import resources
+from . import config
 from .localization import translate
 
 
@@ -89,21 +89,16 @@ class TUI(UI):
 
 class GUI(UI):
 
-    class Color(enum.Enum):
-        text = (38, 63, 163)
-        screen_background = (0, 0, 0)
-        info_background = (158, 147, 166)
-
-    def __init__(self, size=(700, 700)):
+    def __init__(self):
         pg.init()
-        self.window = pg.display.set_mode((round(size[0] * 1.4), size[1]), pg.SRCALPHA)
+        self.window = pg.display.set_mode(config.WINDOW_SIZE, pg.SRCALPHA)
         pg.display.set_caption("Isolation!")
-        self.screen = self.window.subsurface(pg.Rect(0, 0, size[0], size[1]))
+        self.screen = self.window.subsurface(pg.Rect(0, 0, *config.SCREEN_SIZE))
 
         self.font = pg.font.SysFont("arial", 100)
 
-        self.info = self.window.subsurface(pg.Rect(size[0], 0, round(size[0] * 0.4), size[1]))
-        self.info.fill(self.Color.info_background.value)
+        self.info = self.window.subsurface(pg.Rect(config.SCREEN_SIZE[0], 0, *config.INFO_SIZE))
+        self.info.fill(config.INFO_BACKGROUND_COLOR)
         self.info_font = pg.font.SysFont("arial", 25)
         self.info_txt_top = 0
         self.info_img_top = self.info_font.get_height()
@@ -119,7 +114,7 @@ class GUI(UI):
         board_size = board.size()
         if self._last_board is None:
             self._resize_images(board_size)
-            self.screen.fill(self.Color.screen_background.value)
+            self.screen.fill(config.SCREEN_BACKGROUND_COLOR)
             for y in range(board_size):
                 for x in range(board_size):
                     self.draw_cell(self._block, (y, x), board_size)
@@ -152,7 +147,7 @@ class GUI(UI):
         return x, y
 
     def display_info_text(self, msg):
-        text = self.info_font.render(msg, True, self.Color.text.value)
+        text = self.info_font.render(msg, True, config.TEXT_COLOR)
         rect = text.get_rect()
         rect.left = max((self.info.get_width() - rect.width) // 2, 0)
         rect.top = self.info_txt_top
@@ -161,11 +156,14 @@ class GUI(UI):
         return rect.x, rect.y
 
     def reset_info(self):
-        self.info.fill(self.Color.info_background.value)
-        for i, rule in enumerate(self.rules[::-1]):
+        self.info.fill(config.INFO_BACKGROUND_COLOR)
+        # render line from bottom to top
+        for i in range(1, len(self.rules) + 1):
+            rule = self.rules[-i]
             rect = rule.get_rect()
             rect.left = max((self.info.get_width() - rect.width) // 2, 0)
-            rect.bottom = round(self.info.get_height() * 0.8) - i * self.info_font.get_height()
+            # count position for current line
+            rect.bottom = self.info.get_height()- i * self.info_font.get_height()
             self.info.blit(rule, rect)
 
     @property
@@ -242,7 +240,7 @@ class GUI(UI):
         rules = translate(resources.rules)
         self.rules = []
         for rule in rules.splitlines():
-            self.rules.append(self.info_font.render(rule, True, self.Color.text.value))
+            self.rules.append(self.info_font.render(rule, True, config.TEXT_COLOR))
 
     def _set_icons(self, size):
         self.ANN_ICON = pg.transform.scale(self._ann, (size, size))
@@ -262,7 +260,7 @@ class GUI(UI):
 
     def _display_final_msg(self, msg):
         screen_size = self.size
-        text = self.font.render(msg, True, self.Color.text.value)
+        text = self.font.render(msg, True, config.TEXT_COLOR)
         rect = text.get_rect()
         rect.center = screen_size[0] // 2, screen_size[1] // 2
         self.screen.blit(text, rect)
