@@ -30,25 +30,36 @@ def run_online_pvp(*args):
     while command not in available_commands:
         command = input("\n" + help_str + "\n").strip()
 
+    if command == HOST_COMMAND:
+        port = int(input(translate("Enter the desired port number: ")).strip())
+
+        host_online_pvp(port)
+    elif command == JOIN_COMMAND:
+        host = input(connection_utils.HOST_PROMPT).strip()
+        port = int(input(connection_utils.PORT_PROMPT).strip())
+
+        join_online_pvp(host, port)
+
+
+def host_online_pvp(port):
+    ui = GUI()
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
-        ui = GUI()
+        connection_utils.start_server_on_port(server_socket, int(port))
+        client_socket = connection_utils.blocking_wait_for_player(server_socket)
 
-        if command == HOST_COMMAND:
-            port = int(input(translate("Enter the desired port number: ")).strip())
+        player_a = LocalUserControlledPlayer(ui, ui.ANN_ICON, client_socket)
+        player_b = RemoteUserControlledPlayer(ui, ui.BOB_ICON, client_socket)
 
-            connection_utils.start_server_on_port(server_socket, port)
-            client_socket = connection_utils.blocking_wait_for_player(server_socket)
+        run_game(ui, player_a, player_b)
 
-            player_a = LocalUserControlledPlayer(ui, ui.ANN_ICON, client_socket)
-            player_b = RemoteUserControlledPlayer(ui, ui.BOB_ICON, client_socket)
-        elif command == JOIN_COMMAND:
-            host = input(connection_utils.HOST_PROMPT).strip()
-            port = int(input(connection_utils.PORT_PROMPT).strip())
 
-            server_socket.connect((host, int(port)))
+def join_online_pvp(host, port):
+    ui = GUI()
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
+        server_socket.connect((host, int(port)))
 
-            player_a = RemoteUserControlledPlayer(ui, ui.ANN_ICON, server_socket)
-            player_b = LocalUserControlledPlayer(ui, ui.BOB_ICON, server_socket)
+        player_a = RemoteUserControlledPlayer(ui, ui.ANN_ICON, server_socket)
+        player_b = LocalUserControlledPlayer(ui, ui.BOB_ICON, server_socket)
 
         run_game(ui, player_a, player_b)
 
