@@ -36,6 +36,7 @@ translation = {
     THIS_COMPUTER_BUTTON: "Этот компьютер",
     TWO_COMPUTERS_BUTTON: "Два компьютера",
     START_GAME_BUTTON: "Начать игру",
+    CREATE_AND_WAIT: "Создать игру и ожидать",
     JOIN_BUTTON: "Присоединиться",
     HOST_BUTTON: "Создать",
     PORT_INPUT: "Порт:  ",

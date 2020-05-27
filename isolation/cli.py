@@ -41,23 +41,23 @@ def run_online_pvp(*args):
         join_online_pvp(host, port)
 
 
-def host_online_pvp(port):
-    ui = GUI()
+def host_online_pvp(port, window=None):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         connection_utils.start_server_on_port(server_socket, int(port))
         client_socket = connection_utils.blocking_wait_for_player(server_socket)
 
+        ui = GUI(window)
         player_a = LocalUserControlledPlayer(ui, ui.ANN_ICON, client_socket)
         player_b = RemoteUserControlledPlayer(ui, ui.BOB_ICON, client_socket)
 
         run_game(ui, player_a, player_b)
 
 
-def join_online_pvp(host, port):
-    ui = GUI()
+def join_online_pvp(host, port, window=None):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         server_socket.connect((host, int(port)))
 
+        ui = GUI(window)
         player_a = RemoteUserControlledPlayer(ui, ui.ANN_ICON, server_socket)
         player_b = LocalUserControlledPlayer(ui, ui.BOB_ICON, server_socket)
 

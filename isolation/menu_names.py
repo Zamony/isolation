@@ -15,6 +15,7 @@ BACK_BUTTON = "< Back"
 THIS_COMPUTER_BUTTON = "This computer"
 TWO_COMPUTERS_BUTTON = "Two computers"
 START_GAME_BUTTON = "Start game"
+CREATE_AND_WAIT = "Create and wait"
 JOIN_BUTTON = "Join"
 HOST_BUTTON = "Host"
 
