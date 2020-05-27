@@ -4,66 +4,68 @@ import pygame_menu as pg_menu
 from . import ai
 from . import config
 from .cli import run_local_gui, run_local_pvp, host_online_pvp, join_online_pvp
+from .localization import translate
+from .menu_names import *
 
 
 def main_menu(window):
-    menu = pg_menu.Menu(config.WINDOW_SIZE[1], config.WINDOW_SIZE[0], "Welcome to Isolation!",
+    menu = pg_menu.Menu(config.WINDOW_SIZE[1], config.WINDOW_SIZE[0], translate(WELCOME_HEADER),
                         theme=pg_menu.themes.THEME_BLUE)
 
-    menu.add_button("Play with computer", difficulty_menu, window)
-    menu.add_button("Play with a friend", local_or_remote_pvp_menu, window)
-    menu.add_button("Quit", pg_menu.events.EXIT)
+    menu.add_button(translate(PVE_BUTTON), difficulty_menu, window)
+    menu.add_button(translate(PVP_BUTTON), local_or_remote_pvp_menu, window)
+    menu.add_button(translate(QUIT_BUTTON), pg_menu.events.EXIT)
     menu.mainloop(window)
 
 
 def difficulty_menu(window):
-    menu = pg_menu.Menu(config.WINDOW_SIZE[1], config.WINDOW_SIZE[0], "Choose difficulty",
+    menu = pg_menu.Menu(config.WINDOW_SIZE[1], config.WINDOW_SIZE[0], translate(CHOOSE_DIFFICULTY_HEADER),
                         theme=pg_menu.themes.THEME_BLUE)
-    menu.add_button("Easy", run_local_gui, ai.Difficulty.easy)
-    menu.add_button("Normal", run_local_gui, ai.Difficulty.normal)
-    menu.add_button("Hard", run_local_gui, ai.Difficulty.hard)
-    menu.add_button("< Back", main_menu, window)
+    menu.add_button(translate(EASY_BUTTON), run_local_gui, ai.Difficulty.easy)
+    menu.add_button(translate(NORMAL_BUTTON), run_local_gui, ai.Difficulty.normal)
+    menu.add_button(translate(HARD_BUTTON), run_local_gui, ai.Difficulty.hard)
+    menu.add_button(translate(BACK_BUTTON), main_menu, window)
     menu.mainloop(window)
 
 
 def local_or_remote_pvp_menu(window):
-    menu = pg_menu.Menu(config.WINDOW_SIZE[1], config.WINDOW_SIZE[0], "Choose PVP type",
+    menu = pg_menu.Menu(config.WINDOW_SIZE[1], config.WINDOW_SIZE[0], translate(CHOOSE_PVP_TYPE_HEADER),
                         theme=pg_menu.themes.THEME_BLUE)
 
-    menu.add_button("This computer", run_local_pvp)
-    menu.add_button("Two computers", host_or_join_menu, window)
-    menu.add_button("< Back", main_menu, window)
+    menu.add_button(translate(THIS_COMPUTER_BUTTON), run_local_pvp)
+    menu.add_button(translate(TWO_COMPUTERS_BUTTON), host_or_join_menu, window)
+    menu.add_button(translate(BACK_BUTTON), main_menu, window)
     menu.mainloop(window)
 
 
 def host_or_join_menu(window):
-    menu = pg_menu.Menu(config.WINDOW_SIZE[1], config.WINDOW_SIZE[0], "Choose role",
+    menu = pg_menu.Menu(config.WINDOW_SIZE[1], config.WINDOW_SIZE[0], translate(CHOOSE_ROLE_HEADER),
                         theme=pg_menu.themes.THEME_BLUE)
 
-    menu.add_button("Host", host_menu, window)
-    menu.add_button("Join", join_menu, window)
-    menu.add_button("< Back", local_or_remote_pvp_menu, window)
+    menu.add_button(translate(HOST_BUTTON), host_menu, window)
+    menu.add_button(translate(JOIN_BUTTON), join_menu, window)
+    menu.add_button(translate(BACK_BUTTON), local_or_remote_pvp_menu, window)
     menu.mainloop(window)
 
 
 def host_menu(window):
-    menu = pg_menu.Menu(config.WINDOW_SIZE[1], config.WINDOW_SIZE[0], "Choose port",
+    menu = pg_menu.Menu(config.WINDOW_SIZE[1], config.WINDOW_SIZE[0], translate(CHOOSE_PORT_HEADER),
                         theme=pg_menu.themes.THEME_BLUE)
 
-    port_input_button = menu.add_text_input("Port:  ", input_type=pg_menu.locals.INPUT_INT)
-    menu.add_button("Start game", host_game, port_input_button)
-    menu.add_button("< Back", host_or_join_menu, window)
+    port_input_button = menu.add_text_input(translate(PORT_INPUT), input_type=pg_menu.locals.INPUT_INT)
+    menu.add_button(translate(START_GAME_BUTTON), host_game, port_input_button)
+    menu.add_button(translate(BACK_BUTTON), host_or_join_menu, window)
     menu.mainloop(window)
 
 
 def join_menu(window):
-    menu = pg_menu.Menu(config.WINDOW_SIZE[1], config.WINDOW_SIZE[0], "Join a game",
+    menu = pg_menu.Menu(config.WINDOW_SIZE[1], config.WINDOW_SIZE[0], translate(JOIN_GAME_HEADER),
                         theme=pg_menu.themes.THEME_BLUE)
 
-    host_input_button = menu.add_text_input("Host:  ")
-    port_input_button = menu.add_text_input("Port:  ", input_type=pg_menu.locals.INPUT_INT)
-    menu.add_button("Start game", join_game, host_input_button, port_input_button)
-    menu.add_button("< Back", host_or_join_menu, window)
+    host_input_button = menu.add_text_input(translate(HOST_INPUT))
+    port_input_button = menu.add_text_input(translate(PORT_INPUT), input_type=pg_menu.locals.INPUT_INT)
+    menu.add_button(translate(START_GAME_BUTTON), join_game, host_input_button, port_input_button)
+    menu.add_button(translate(BACK_BUTTON), host_or_join_menu, window)
     menu.mainloop(window)
 
 

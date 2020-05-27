@@ -1,5 +1,6 @@
 import locale
 
+from .menu_names import *
 from . import resources
 
 lang, _ = locale.getdefaultlocale()
@@ -18,9 +19,27 @@ translation = {
     "Your move": "Ваш ход",
     "Player %s! %s": "Игрок %s! %s",
     "Enter your move (ex. A3):": "Введите клетку для перемещения (напр. A3):",
-    "Enter a cell to remove (ex. B3): ": "Введите клетку для удаления (напр. A3):",
     "Wait": "Подождите...",
-
+    WELCOME_HEADER: "Добро пожаловать в Isolation!",
+    CHOOSE_DIFFICULTY_HEADER: "Выберите уровень сложности",
+    CHOOSE_PVP_TYPE_HEADER: "Выберите тип схватки",
+    CHOOSE_ROLE_HEADER: "Выберите роль",
+    CHOOSE_PORT_HEADER: "Выберите порт",
+    JOIN_GAME_HEADER: "Присоединиться к игре",
+    PVE_BUTTON: "Сыграть с компьютером",
+    PVP_BUTTON: "Сыграть с другом",
+    QUIT_BUTTON: "Выйти",
+    EASY_BUTTON: "Лёгкий",
+    NORMAL_BUTTON: "Нормальный",
+    HARD_BUTTON: "Сложный",
+    BACK_BUTTON: "< Назад",
+    THIS_COMPUTER_BUTTON: "Этот компьютер",
+    TWO_COMPUTERS_BUTTON: "Два компьютера",
+    START_GAME_BUTTON: "Начать игру",
+    JOIN_BUTTON: "Присоединиться",
+    HOST_BUTTON: "Создать",
+    PORT_INPUT: "Порт:  ",
+    HOST_INPUT: "Хост:  "
 }
 
 translation[resources.rules] = """
