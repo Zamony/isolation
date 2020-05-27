@@ -89,9 +89,12 @@ class TUI(UI):
 
 class GUI(UI):
 
-    def __init__(self):
-        pg.init()
-        self.window = pg.display.set_mode(config.WINDOW_SIZE, pg.SRCALPHA)
+    def __init__(self, window=None):
+        if window is None:
+            pg.init()
+            self.window = pg.display.set_mode(config.WINDOW_SIZE, pg.SRCALPHA)
+        else:
+            self.window = window
         pg.display.set_caption("Isolation!")
         self.screen = self.window.subsurface(pg.Rect(0, 0, *config.SCREEN_SIZE))
 
