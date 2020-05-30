@@ -10,7 +10,7 @@ dep: requirements.txt
 
 run: dep
 	. venv/bin/activate; \
-	python main.py \
+	python main.py; \
 	deactivate;
 
 run-unit-tests:

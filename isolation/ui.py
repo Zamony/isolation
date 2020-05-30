@@ -12,7 +12,7 @@ import pygame as pg
 
 from . import resources
 from . import config
-from .localization import translate
+from .localization import Msg, _
 
 
 class UI(abc.ABC):
@@ -72,13 +72,13 @@ class TUI(UI):
         print(self.BOARD_DIGITS_GRID)
 
     def draw(self):
-        print(translate("It's a draw!"))
+        print(_(Msg.DRAW))
 
     def ann_won(self):
-        print(translate("Player %s has won!") % self.ANN_ICON)
+        print(_(Msg.PLAYER_X_WON) % self.ANN_ICON)
 
     def bob_won(self):
-        print(translate("Player %s has won!") % self.BOB_ICON)
+        print(_(Msg.PLAYER_X_WON) % self.BOB_ICON)
 
     def display_help(self, pos, board):
         pass
@@ -105,6 +105,13 @@ class GUI(UI):
         self.info_font = pg.font.SysFont("arial", 25)
         self.info_txt_top = 0
         self.info_img_top = self.info_font.get_height()
+
+        self._ann = None
+        self._bob = None
+        self._block = None
+        self._empty = None
+        self._help = None
+
         self._load_objects()
         self._set_icons(self.info.get_width() // 2)
 
@@ -134,13 +141,13 @@ class GUI(UI):
         pg.display.update()
 
     def draw(self):
-        self._display_final_msg(translate("Draw!"))
+        self._display_final_msg(_(Msg.DRAW))
 
     def ann_won(self):
-        self._display_final_msg(translate("Ann won!"))
+        self._display_final_msg(_(Msg.ANN_WON))
 
     def bob_won(self):
-        self._display_final_msg(translate("Bob won!"))
+        self._display_final_msg(_(Msg.BOB_WON))
 
     def display_info_img(self, img):
         x = max((self.info.get_width() - img.get_width()) // 2, 0)
@@ -240,7 +247,7 @@ class GUI(UI):
         self.remove_cursor = ((32, 24), (3, 7)) + masks
         self.default_cursor = pg.cursors.arrow
 
-        rules = translate(resources.rules)
+        rules = _(Msg.RULES)
         self.rules = []
         for rule in rules.splitlines():
             self.rules.append(self.info_font.render(rule, True, config.TEXT_COLOR))
@@ -268,9 +275,8 @@ class GUI(UI):
         rect.center = screen_size[0] // 2, screen_size[1] // 2
         self.screen.blit(text, rect)
         pg.display.update()
-        self._finalize()
 
-    def _finalize(self):
+        # finalize gui
         while True:
             for event in pg.event.get():
                 if event.type == pg.QUIT:

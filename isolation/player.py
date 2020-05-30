@@ -6,10 +6,10 @@ import abc
 import sys
 import pygame as pg
 
-from . import connection_utils
+from . import conn
 from . import ai
 from .ui import TUI, GUI
-from .localization import translate
+from .localization import Msg, _
 
 
 class Player(abc.ABC):
@@ -35,35 +35,37 @@ class UserControlledPlayer(Player):
                 for j, k in enumerate(("0", "1", "2", "3", "4", "5", "6")):
                     if s.lower() == f"{c}{k}".lower():
                         return i, j
-        else:
-            self.ui.display_info_img(self.icon)
-            self.ui.display_info_text(translate("Your move"))
-            pos = None
-            while pos is None:
-                for event in pg.event.get():
-                    if cursor:
-                        self.ui.display_cursor(board)
+            return -1, -1
 
-                    if event.type == pg.MOUSEBUTTONDOWN and event.button == pg.BUTTON_LEFT:
-                        pos = event.pos
-                        break
-                    elif event.type == pg.QUIT:
-                        pg.quit()
-                        sys.exit(0)
+        self.ui.display_info_img(self.icon)
+        self.ui.display_info_text(_(Msg.YOUR_MOVE))
+        pos = None
+        while pos is None:
+            for event in pg.event.get():
+                if cursor:
+                    self.ui.display_cursor(board)
 
-            return self.ui.screen2board(pos, board.size())
+                if event.type == pg.MOUSEBUTTONDOWN and event.button == pg.BUTTON_LEFT:
+                    pos = event.pos
+                    break
+
+                if event.type == pg.QUIT:
+                    pg.quit()
+                    sys.exit(0)
+
+        return self.ui.screen2board(pos, board.size())
 
     def _with_identifier(self, s):
-        return translate("Player %s! %s") % (self.icon, s)
+        return _(Msg.WITH_PLAYER_IDENT) % (self.icon, s)
 
     def get_move(self, my_position, board):
         self.ui.display_help(my_position, board)
-        move = self._get_choice(translate("Enter your move (ex. A3):"), board)
+        move = self._get_choice(_(Msg.ENTER_YOUR_MOVE), board)
         self.ui.clear_help(my_position, board)
         return move
 
     def get_remove(self, board):
-        return self._get_choice(translate("Enter a cell to remove (ex. B3): "), board, cursor=True)
+        return self._get_choice(_(Msg.ENTER_YOUR_REMOVE), board, cursor=True)
 
 
 class LocalUserControlledPlayer(UserControlledPlayer):
@@ -73,12 +75,12 @@ class LocalUserControlledPlayer(UserControlledPlayer):
 
     def get_move(self, my_position, board):
         move = super().get_move(my_position, board)
-        connection_utils.send_coords(self.socket, move)
+        conn.send_coords(self.socket, move)
         return move
 
     def get_remove(self, board):
         remove = super().get_remove(board)
-        connection_utils.send_coords(self.socket, remove)
+        conn.send_coords(self.socket, remove)
         return remove
 
 
@@ -89,15 +91,15 @@ class RemoteUserControlledPlayer(UserControlledPlayer):
 
     def get_move(self, my_position, board):
         if isinstance(self.ui, GUI):
-            self.ui.display_info_text(translate("Wait"))
+            self.ui.display_info_text(_(Msg.WAIT))
             self.ui.display_info_img(self.ui.WAIT_ICON)
-        return connection_utils.receive_one_digit_coords(self.socket)
+        return conn.receive_one_digit_coords(self.socket)
 
     def get_remove(self, board):
         if isinstance(self.ui, GUI):
-            self.ui.display_info_text(translate("Wait"))
+            self.ui.display_info_text(_(Msg.WAIT))
             self.ui.display_info_img(self.ui.WAIT_ICON)
-        return connection_utils.receive_one_digit_coords(self.socket)
+        return conn.receive_one_digit_coords(self.socket)
 
 
 class RobotControlledPlayer(Player):
@@ -110,16 +112,16 @@ class RobotControlledPlayer(Player):
 
     def get_move(self, my_position, board):
         if isinstance(self.ui, GUI):
-            self.ui.display_info_text(translate("Wait"))
+            self.ui.display_info_text(_(Msg.WAIT))
             self.ui.display_info_img(self.ui.WAIT_ICON)
 
-        _, turn = ai.minimax(board, self.difficulty)
+        turn = ai.minimax(board, self.difficulty)[1]
         self.remove_x = turn.remove_x
         self.remove_y = turn.remove_y
         return turn.move_x, turn.move_y
 
     def get_remove(self, board):
         if isinstance(self.ui, GUI):
-            self.ui.display_info_text(translate("Wait"))
+            self.ui.display_info_text(_(Msg.WAIT))
             self.ui.display_info_img(self.ui.WAIT_ICON)
         return self.remove_x, self.remove_y

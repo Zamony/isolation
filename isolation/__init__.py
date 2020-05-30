@@ -12,7 +12,6 @@ from .game import (
 
 from .ui import TUI, GUI
 from .player import Player, UserControlledPlayer, LocalUserControlledPlayer, RemoteUserControlledPlayer, RobotControlledPlayer
-from .localization import translate
+from .localization import _
 from . import ai
-from . import cli
-from . import gui_menu
+from . import gui_runner

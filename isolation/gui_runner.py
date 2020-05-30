@@ -1,5 +1,6 @@
 """
-Module run implements different typ
+Module gui_runner implements functions to run
+different types of the game in GUI mode
 """
 
 import socket
@@ -121,7 +122,7 @@ def default_menu(header):
     return pg_menu.Menu(
         config.WINDOW_SIZE[1],
         config.WINDOW_SIZE[0],
-        _(header),
+        header,
         theme=pg_menu.themes.THEME_BLUE,
     )
 
@@ -130,4 +131,7 @@ def main():
     pg.init()
     window = pg.display.set_mode(config.WINDOW_SIZE, pg.SRCALPHA)
 
-    main_menu(window)
+    try:
+        main_menu(window)
+    except Exception:
+        pass

@@ -111,10 +111,10 @@ class Board:
     def get_bob_pos(self):
         return self.bob_pos
 
-    def is_empty(self, x, y):
+    def is_empty(self, y, x):
         if x >= self.n or x < 0 or y >= self.n or y < 0:
             return True
-        return self.board[x][y] == Cell.none
+        return self.board[y][x] == Cell.none
 
     def is_busy(self, y, x):
         busy_cell = self.is_empty(y, x)

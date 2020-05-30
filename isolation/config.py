@@ -1,3 +1,7 @@
+"""
+Module config stores configuration parameters of the game
+"""
+
 import pygame as pg
 
 # window configuration
