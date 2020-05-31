@@ -37,10 +37,9 @@ class TestAI(unittest.TestCase):
         total = 10
         for _ in range(total):
             player_a = RandomControlledPlayer()
-            player_b = RobotControlledPlayer(ai.Difficulty.hard)
+            player_b = RobotControlledPlayer(mock.Mock(), ai.Difficulty.hard)
             winner = run_game(mock.Mock(), player_a, player_b)
             if winner == Winner.player_b:
                 nvictory += 1
 
-        print(nvictory)
         self.assertTrue(nvictory > total//2)
