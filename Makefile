@@ -15,12 +15,12 @@ run: dep
 
 run-unit-tests:
 	. venv/bin/activate; \
-	python -m unittest tests/test_board.py tests/test_ui.py; \
+	python -m unittest tests/test_board.py tests/test_ui.py tests/test_player.py; \
 	deactivate;
 
 run-func-tests:
 	. venv/bin/activate; \
-	python -m unittest tests/test_ai.py; \
+	python -m unittest tests/test_ai.py tests/test_game.py; \
 	deactivate;
 
 build: dep clean
