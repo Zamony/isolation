@@ -70,15 +70,28 @@ class UserControlledPlayer(Player):
 
 class LocalUserControlledPlayer(UserControlledPlayer):
     def __init__(self, ui, icon, socket=None):
+        """
+        A class to be used as a representation of local machine's player in online game.
+
+        :param ui: used interface implementation
+        :param icon: player's icon to distinguish from another
+        :param socket: socket for writing local player's moves into it
+        """
         super().__init__(ui, icon)
         self.socket = socket
 
     def get_move(self, my_position, board):
+        """
+        In addition to reading player's move also sends these coordinates to the opponent.
+        """
         move = super().get_move(my_position, board)
         conn.send_coords(self.socket, move)
         return move
 
     def get_remove(self, board):
+        """
+        In addition to reading player's removed cell also sends these coordinates to the opponent.
+        """
         remove = super().get_remove(board)
         conn.send_coords(self.socket, remove)
         return remove
@@ -86,16 +99,29 @@ class LocalUserControlledPlayer(UserControlledPlayer):
 
 class RemoteUserControlledPlayer(UserControlledPlayer):
     def __init__(self, ui, icon, socket=None):
+        """
+        A class to be used as a representation of remote machine's player in online game.
+
+        :param ui: used interface implementation
+        :param icon: player's icon to distinguish from another
+        :param socket: socket for receiving remote player's moves
+        """
         super().__init__(ui, icon)
         self.socket = socket
 
     def get_move(self, my_position, board):
+        """
+        Reads the remote user's move coordinates from the socket
+        """
         if isinstance(self.ui, GUI):
             self.ui.display_info_text(_(Msg.WAIT))
             self.ui.display_info_img(self.ui.WAIT_ICON)
         return conn.receive_one_digit_coords(self.socket)
 
     def get_remove(self, board):
+        """
+        Reads the remote user's removal coordinates from the socket
+        """
         if isinstance(self.ui, GUI):
             self.ui.display_info_text(_(Msg.WAIT))
             self.ui.display_info_img(self.ui.WAIT_ICON)
