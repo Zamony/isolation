@@ -19,30 +19,53 @@ class UI(abc.ABC):
 
     @abc.abstractmethod
     def display(self, board):
+        """Display current board.
+
+        :param board: board instance.
+        """
         pass
 
     @abc.abstractmethod
     def draw(self):
+        """Display draw message.
+        """
         pass
 
     @abc.abstractmethod
     def ann_won(self):
+        """Display ann-won message.
+        """
         pass
 
     @abc.abstractmethod
     def bob_won(self):
+        """Display bob-won message.
+        """
         pass
 
     @abc.abstractmethod
     def display_help(self, pos, board):
+        """Display hints.
+
+        :param pos: player position
+        :param board: board instance
+        """
         pass
 
     @abc.abstractmethod
     def clear_help(self, pos, board):
+        """Hide hints.
+
+        :param pos: player position
+        :param board: board instance
+        """
         pass
 
 
 class TUI(UI):
+    """Text-based user interface.
+    """
+
     BOARD_DIGITS_GRID = "  0123456"
     ANN_ICON = "◍"
     BOB_ICON = "◆"
@@ -88,6 +111,8 @@ class TUI(UI):
 
 
 class GUI(UI):
+    """Graphical user interface.
+    """
 
     def __init__(self, window=None):
         if window is None:
@@ -150,6 +175,10 @@ class GUI(UI):
         self._display_final_msg(_(Msg.BOB_WON))
 
     def display_info_img(self, img):
+        """Display image in info-box.
+
+        :param img: pygame.Surface object
+        """
         x = max((self.info.get_width() - img.get_width()) // 2, 0)
         y = self.info_img_top
         self.info.blit(img, (x, y))
@@ -157,6 +186,10 @@ class GUI(UI):
         return x, y
 
     def display_info_text(self, msg):
+        """Display text in info-box.
+
+        :param msg: some text
+        """
         text = self.info_font.render(msg, True, config.TEXT_COLOR)
         rect = text.get_rect()
         rect.left = max((self.info.get_width() - rect.width) // 2, 0)
@@ -166,6 +199,8 @@ class GUI(UI):
         return rect.x, rect.y
 
     def reset_info(self):
+        """Reset info-box to default state (only rules are displayed).
+        """
         self.info.fill(config.INFO_BACKGROUND_COLOR)
         # render line from bottom to top
         for i in range(1, len(self.rules) + 1):
@@ -178,9 +213,17 @@ class GUI(UI):
 
     @property
     def size(self):
+        """Size of game screen.
+        """
         return self.screen.get_size()
 
     def draw_cell(self, img, pos, board_size):
+        """Display board cell.
+
+        :param img: pygame.Surface object
+        :param pos: cell position
+        :param board_size: number of cells in board row (column)
+        """
         screen_pos = self.board2screen(pos, board_size)
         self.screen.blit(img, screen_pos)
 
@@ -206,6 +249,10 @@ class GUI(UI):
                 self.draw_cell(self._block, (i, j), board_size)
 
     def display_cursor(self, board):
+        """Display the correct cursor type.
+
+        :param board: current board
+        """
         cursor_pos = pg.mouse.get_pos()
         y, x = self.screen2board(cursor_pos, board.size())
         if not board.is_busy(y, x):
@@ -214,6 +261,12 @@ class GUI(UI):
             pg.mouse.set_cursor(*self.default_cursor)
 
     def board2screen(self, pos, board_size):
+        """Convert board position to screen position.
+
+        :param pos: position on board
+        :param board_size: number of cells in board row (column)
+        :return: position on screen
+        """
         x, y = pos
         screen_w, screen_h = self.size
         x *= screen_w // board_size
@@ -221,6 +274,12 @@ class GUI(UI):
         return y, x
 
     def screen2board(self, pos, board_size):
+        """Convert screen position to board position
+
+        :param pos: position on screen
+        :param board_size: number of cells in board row (column)
+        :return: position on board
+        """
         x, y = pos
         screen_w, screen_h = self.size
         x //= screen_w // board_size
@@ -228,6 +287,8 @@ class GUI(UI):
         return y, x
 
     def _load_objects(self):
+        """Load the necessary resources.
+        """
         avatar1 = io.BytesIO(base64.b64decode(resources.avatar1))
         avatar2 = io.BytesIO(base64.b64decode(resources.avatar2))
         block = io.BytesIO(base64.b64decode(resources.block))
@@ -253,11 +314,19 @@ class GUI(UI):
             self.rules.append(self.info_font.render(rule, True, config.TEXT_COLOR))
 
     def _set_icons(self, size):
+        """Initialise player icon for info-box.
+
+        :param size: size of info-box player icon
+        """
         self.ANN_ICON = pg.transform.scale(self._ann, (size, size))
         self.BOB_ICON = pg.transform.scale(self._bob, (size, size))
         self.WAIT_ICON = pg.transform.scale(self._wait, (size, size))
 
     def _resize_images(self, board_size):
+        """Resize icons to cell size.
+
+        :param board_size: number of cells in board row (column)
+        """
         screen_size = self.size
         w = screen_size[0] // board_size
         h = screen_size[1] // board_size
@@ -269,6 +338,10 @@ class GUI(UI):
         self._help = pg.transform.scale(self._help, self.cell_size)
 
     def _display_final_msg(self, msg):
+        """Display final message and finalize game session.
+
+        :param msg: some text
+        """
         screen_size = self.size
         text = self.font.render(msg, True, config.TEXT_COLOR)
         rect = text.get_rect()
