@@ -8,7 +8,7 @@ import pygame as pg
 
 from . import conn
 from . import ai
-from .ui import TUI, GUI
+from .ui import GUI
 from .localization import Msg, _
 
 
@@ -29,7 +29,7 @@ class UserControlledPlayer(Player):
         self.icon = icon
 
     def _get_choice(self, msg, board, cursor=False):
-        if isinstance(self.ui, TUI):
+        if not isinstance(self.ui, GUI):
             s = input(self._with_identifier(msg))
             for i, c in enumerate(("A", "B", "C", "D", "E", "F", "G")):
                 for j, k in enumerate(("0", "1", "2", "3", "4", "5", "6")):
