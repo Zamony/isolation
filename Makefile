@@ -1,6 +1,6 @@
 PYTHON=python3
 
-.PHONY: dep run run-unit-tests run-func-tests build clean lint
+.PHONY: dep run run-unit-tests run-func-tests build clean lint doc
 
 dep: requirements.txt
 	@$(PYTHON) -m venv venv
@@ -35,9 +35,18 @@ wheel: dep clean
 	deactivate;
 
 clean:
-	rm -rf dist build __pycache__ isolation.spec *.whl *.egg-info
+	rm -rf dist build __pycache__ isolation.spec *.whl *.egg-info doc
 
 lint:
 	. venv/bin/activate; \
 	pylint --disable="C0103,C0301,C0116,C0115,R0914" isolation; \
 	deactivate;
+
+doc:
+	mkdir -p doc
+	. venv/bin/activate; \
+	python -m pydoc -w `find isolation -name '*.py' | sed 's+/+.+g' | sed 's+.py++g'`; \
+	python -m pydoc -w isolation; \
+	deactivate;
+	cp isolation.html index.html
+	mv *.html doc
