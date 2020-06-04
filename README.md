@@ -15,7 +15,7 @@ The player who cannot make any move loses the game
 There are three installation options, which one to prefer depends on your needs:
 + Installation via Python wheel (you can download wheel file from releases page)
 ```bash
-python install isolation.whl
+pip install isolation.whl
 isolation  # run the game
 ```
 You can always build a wheel yourself (the produced binary will be in `dist` folder)
