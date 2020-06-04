@@ -170,13 +170,16 @@ def default_menu(header):
     :param header: menu's name to be showed to the user
     :return: the created default menu
     """
+
+    theme = pg_menu.themes.THEME_BLUE.copy()
+    theme.widget_font = theme.title_font = "arial"
+
     return pg_menu.Menu(
         config.WINDOW_SIZE[1],
         config.WINDOW_SIZE[0],
         header,
-        theme=pg_menu.themes.THEME_BLUE,
+        theme=theme,
     )
-
 
 def main():
     pg.init()

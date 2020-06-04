@@ -15,3 +15,4 @@ from .player import Player, UserControlledPlayer, LocalUserControlledPlayer, Rem
 from .localization import _
 from . import ai
 from . import gui_runner
+from . import cli
