@@ -1,5 +1,5 @@
 wheel
 pygame==2.0.0.dev8
-pygame_menu
+pygame_menu==3.0.3
 pyinstaller==3.6
 pylint==2.4.4

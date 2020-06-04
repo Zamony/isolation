@@ -18,6 +18,7 @@ setuptools.setup(
     },
     install_requires=[
           'pygame==2.0.0.dev8',
+          'pygame_menu==3.0.3',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
