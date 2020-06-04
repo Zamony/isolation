@@ -23,25 +23,21 @@ class UI(abc.ABC):
 
         :param board: board instance.
         """
-        pass
 
     @abc.abstractmethod
     def draw(self):
         """Display draw message.
         """
-        pass
 
     @abc.abstractmethod
     def ann_won(self):
         """Display ann-won message.
         """
-        pass
 
     @abc.abstractmethod
     def bob_won(self):
         """Display bob-won message.
         """
-        pass
 
     @abc.abstractmethod
     def display_help(self, pos, board):
@@ -50,7 +46,6 @@ class UI(abc.ABC):
         :param pos: player position
         :param board: board instance
         """
-        pass
 
     @abc.abstractmethod
     def clear_help(self, pos, board):
@@ -59,7 +54,6 @@ class UI(abc.ABC):
         :param pos: player position
         :param board: board instance
         """
-        pass
 
 
 class TUI(UI):
