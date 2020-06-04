@@ -52,6 +52,7 @@ make build
 + Russian/English versions of the game
 + Multiple difficulty levels
 + Playing over the Internet
++ Text mode
 
 ## Developer notes
 There are some additional targets in the Makefile
